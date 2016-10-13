@@ -8,7 +8,7 @@ var ObjectId = Schema.ObjectId;
 var urls = new Schema({
   id: ObjectId,
   url: { type: String, required: true },
-  baseUrl: { type: String, required: true },
+  baseUrl: { type: String },
   code: String,
   title: { type: String, required: true },
   visits: { type: Number, default: 0 },
@@ -23,21 +23,5 @@ urls.pre('save', function(next) {
 });
 
 var Link = db.model('Link', urls);
-
-
-// var Link = db.Model.extend({
-//   tableName: 'urls',
-//   hasTimestamps: true,
-//   defaults: {
-//     visits: 0
-//   },
-//   initialize: function() {
-//     this.on('creating', function(model, attrs, options) {
-//       var shasum = crypto.createHash('sha1');
-//       shasum.update(model.get('url'));
-//       model.set('code', shasum.digest('hex').slice(0, 5));
-//     });
-//   }
-// });
 
 module.exports = Link;

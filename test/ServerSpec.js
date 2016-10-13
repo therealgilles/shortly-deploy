@@ -1,5 +1,4 @@
 var request = require('supertest');
-var express = require('express');
 var expect = require('chai').expect;
 var app = require('../server-config.js');
 
@@ -11,7 +10,7 @@ var Link = require('../app/models/link');
 // NOTE: these tests are designed for mongo!
 /////////////////////////////////////////////////////
 
-xdescribe('', function() {
+describe('', function() {
 
   beforeEach(function(done) {
     // Log out currently signed in user
@@ -21,7 +20,7 @@ xdescribe('', function() {
 
         // Delete objects from db so they can be created later for the test
         Link.remove({url: 'http://www.roflzoo.com/'}).exec();
-        User.remove({username: 'Savannah'}).exec();
+        User.remove({username: 'Svnh'}).exec();
         User.remove({username: 'Phillip'}).exec();
 
         done();
@@ -170,6 +169,7 @@ xdescribe('', function() {
   }); // 'Privileged Access'
 
   describe('Account Creation:', function() {
+    this.timeout(5000);
 
     it('Signup creates a new user', function(done) {
       request(app)
@@ -198,7 +198,7 @@ xdescribe('', function() {
           expect(res.headers.location).to.equal('/');
           request(app)
             .get('/logout')
-            .expect(200);
+            .expect(302); //.expect(200);
         })
         .end(done);
     });
@@ -206,6 +206,7 @@ xdescribe('', function() {
   }); // 'Account Creation'
 
   describe('Account Login:', function() {
+    this.timeout(5000);
 
     beforeEach(function(done) {
       new User({

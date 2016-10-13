@@ -120,6 +120,9 @@ module.exports = function(grunt) {
       },
       uploadDroplet: {
         command: 'git push live master'
+      },
+      mochaTest: {
+        command: 'node_modules/mocha/bin/mocha test/ServerSpec.js'
       }
     },
   });
@@ -148,7 +151,7 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
-    'mochaTest'
+    'shell:mochaTest'
   ]);
 
   // build and test
