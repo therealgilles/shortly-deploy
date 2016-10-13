@@ -166,8 +166,8 @@ module.exports = function(grunt) {
     } else {
       grunt.task.run([ 'build', 'server-dev' ]);
     }
-  },
-
+  });
+  
   grunt.registerTask('all', [
     'build', 'deploy'
   ]);
