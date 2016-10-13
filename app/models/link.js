@@ -2,8 +2,8 @@ var db = require('../config');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 
 var urls = new Schema({
   id: ObjectId,
@@ -15,14 +15,15 @@ var urls = new Schema({
   timestamps: {}
 });
 
-var Link = db.model('Link', urls);
-
-Link.pre('save', function(next) {
+urls.pre('save', function(next) {
   var shasum = crypto.createHash('sha1');
   shasum.update(this.url);
   this.code = shasum.digest('hex').slice(0, 5);
   next();
 });
+
+var Link = db.model('Link', urls);
+
 
 // var Link = db.Model.extend({
 //   tableName: 'urls',

@@ -3,8 +3,8 @@ var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
 var mongoose = require('mongoose');
 
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 
 var users = new Schema({
   id: ObjectId,
@@ -13,12 +13,17 @@ var users = new Schema({
   timestamps: {}
 });
 
-var User = db.model('User', users);
-
-User.pre('save', function(next) {
+users.pre('save', function(next) {
   this.password = bcrypt.hashSync(this.password);
   next();
 });
+
+users.methods.comparePassword = function(attemptedPassword) {
+  return bcrypt.compareSync(attemptedPassword, this.password);
+};
+
+var User = db.model('User', users);
+
 
 // User.pre('find', function(next) {
 //   var hashedPassword;

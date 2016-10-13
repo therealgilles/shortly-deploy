@@ -5,10 +5,13 @@ module.exports = function(grunt) {
 
     env: {
       dev: {
-        NODE_ENV : 'dev',
+        NODE_ENV: 'dev'
       },
       prod: {
-        NODE_ENV: 'prod'
+        NODE_ENV: 'prod',
+        SERVER_PORT: 4568,
+        DB_PORT: 27017,
+        DB_HOST: '127.0.0.1'
       }
     },
 
