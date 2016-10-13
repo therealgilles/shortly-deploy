@@ -55,7 +55,7 @@ module.exports = function(grunt) {
     },
 
     uglify: {
-      dynamic_mappings: {
+      'dynamic_mappings': {
         // Grunt will search for "**/*.js" under "lib/" when the "uglify" task
         // runs and build the appropriate src-dest file mappings then, so you
         // don't need to update the Gruntfile when files are added or removed.
@@ -154,9 +154,9 @@ module.exports = function(grunt) {
   // build and test
   grunt.registerTask('build', function (n) {
     if (grunt.option('prod')) {
-      grunt.task.run([ 'env:dev', 'eslint', 'test' ]);
-    } else {
       grunt.task.run([ 'env:prod', 'clean', 'eslint', 'concat', 'copy', 'uglify', 'cssmin', 'test' ]);
+    } else {
+      grunt.task.run([ 'env:dev', 'eslint', 'test' ]);
     }
   });
 
