@@ -17,12 +17,13 @@ module.exports = function(grunt) {
     concat: {
       client: {
         files: {
-          'public/dist/build.js': [
+          'public/dist/build.js': [ 'public/client/**/*.js' ],
+          'public/dist/lib.js': [
             'public/lib/jquery.js',
             'public/lib/underscore.js',
             'public/lib/backbone.js',
-            'public/lib/handlebars.js',
-            'public/client/**/*.js' ]
+            'public/lib/handlebars.js'
+          ]
         },
       }
     },
