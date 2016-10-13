@@ -114,6 +114,9 @@ module.exports = function(grunt) {
     shell: {
       prodServer: {
         command: 'node server.js'
+      },
+      uploadDroplet: {
+        command: 'git push live master'
       }
     },
   });
@@ -151,15 +154,19 @@ module.exports = function(grunt) {
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
-      grunt.task.run([ 'server-prod' ]);
+      grunt.task.run([ 'shell:uploadDroplet' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
-  grunt.registerTask('deploy', [
-    'env:prod', 'clean', 'concat', 'copy', 'uglify', 'cssmin', 'test'
-  ]);
+  grunt.registerTask('deploy', function (n) {
+    if (grunt.option('prod')) {
+      grunt.task.run([ 'env:prod', 'clean', 'concat', 'copy', 'uglify', 'cssmin', 'test', 'upload' ]);
+    } else {
+      grunt.task.run([ 'build', 'server-dev' ]);
+    }
+  },
 
   grunt.registerTask('all', [
     'build', 'deploy'
