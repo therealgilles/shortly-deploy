@@ -3,15 +3,35 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    env: {
+      dev: {
+        NODE_ENV : 'dev',
+      },
+      prod: {
+        NODE_ENV: 'prod'
+      }
+    },
+
     clean: [ 'public/dist/' ],
+
     concat: {
       client: {
         files: {
           'public/dist/build.js': [
-            'public/client/**/*.js',
-            'public/lib/**/*.js'
-          ]
+            'public/lib/jquery.js',
+            'public/lib/underscore.js',
+            'public/lib/backbone.js',
+            'public/lib/handlebars.js',
+            'public/client/**/*.js' ]
         },
+      }
+    },
+
+    copy: {
+      client: {
+        files: [ // includes files within path
+          { expand: true, flatten: true, cwd: 'public/', src: [ '*.png', '*.gif' ], dest: 'public/dist', filter: 'isFile' }
+        ]
       }
     },
 
@@ -20,7 +40,7 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec'
         },
-        src: ['test/**/*.js']
+        src: [ 'test/**/*.js' ]
       }
     },
 
@@ -66,7 +86,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'public/',
-          src: ['*.css', '!*.min.css'],
+          src: [ '*.css', '!*.min.css' ],
           dest: 'public/dist/',
           ext: '.min.css'
         }]
@@ -86,12 +106,13 @@ module.exports = function(grunt) {
       },
       css: {
         files: 'public/*.css',
-        tasks: ['cssmin']
+        tasks: [ 'cssmin' ]
       }
     },
 
     shell: {
       prodServer: {
+        command: 'node server.js'
       }
     },
   });
@@ -101,13 +122,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
+  grunt.loadNpmTasks('grunt-env');
 
   grunt.registerTask('server-dev', function (target) {
-    grunt.task.run([ 'nodemon', 'watch' ]);
+    grunt.task.run([ 'env:dev', 'nodemon', 'watch' ]);
+  });
+  grunt.registerTask('server-prod', function (target) {
+    grunt.task.run([ 'env:prod', 'shell:prodServer' ]);
   });
 
   ////////////////////////////////////////////////////
@@ -119,19 +145,22 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'clean', 'eslint', 'test'
+    'env:dev', 'eslint', 'test'
   ]);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
-      // add your production server task here
+      grunt.task.run([ 'server-prod' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
   grunt.registerTask('deploy', [
-    'build', 'concat', 'uglify', 'cssmin'
+    'env:prod', 'clean', 'concat', 'copy', 'uglify', 'cssmin', 'test'
   ]);
 
+  grunt.registerTask('all', [
+    'build', 'deploy'
+  ]);
 };

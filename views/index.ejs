@@ -6,4 +6,6 @@
   });
 </script>
 
-<script src='/dist/build.js'></script>
+<% if (process.env.NODE_ENV !== 'prod') { %>
+<%   include partials/scripts.dev.ejs %>
+<% } %>

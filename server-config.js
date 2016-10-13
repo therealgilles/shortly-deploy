@@ -1,3 +1,5 @@
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
 var express = require('express');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
@@ -14,7 +16,8 @@ app.set('view engine', 'ejs');
 app.use(partials());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public'));
+// FIXME: do we need this?
+app.use(express.static(__dirname + '/public' + (process.env.NODE_ENV !== 'prod' ? '' : '/dist')));
 app.use(cookieParser('shhhh, very secret'));
 app.use(session({
   secret: 'shhh, it\'s a secret',
