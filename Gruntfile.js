@@ -59,9 +59,9 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,          // Enable dynamic expansion.
-            cwd: 'public/build/',  // Src matches are relative to this path.
+            cwd: 'public/dist/',   // Src matches are relative to this path.
             src: ['**/*.js'],      // Actual pattern(s) to match.
-            dest: 'public/build/', // Destination path prefix.
+            dest: 'public/dist/',  // Destination path prefix.
             ext: '.min.js',        // Dest filepaths will have this extension.
             extDot: 'first'        // Extensions in filenames begin after the first dot
           },
@@ -162,12 +162,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', function (n) {
     if (grunt.option('prod')) {
-      grunt.task.run([ 'env:prod', 'clean', 'concat', 'copy', 'uglify', 'cssmin', 'test', 'upload' ]);
+      grunt.task.run([ 'env:prod', 'clean', 'eslint', 'concat', 'copy', 'uglify', 'cssmin', 'test', 'upload' ]);
     } else {
       grunt.task.run([ 'build', 'server-dev' ]);
     }
   });
-  
+
   grunt.registerTask('all', [
     'build', 'deploy'
   ]);
