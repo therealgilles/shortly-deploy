@@ -151,27 +151,30 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-    'env:dev', 'eslint', 'test'
-  ]);
+  // build and test
+  grunt.registerTask('build', function (n) {
+    if (grunt.option('prod')) {
+      grunt.task.run([ 'env:dev', 'eslint', 'test' ]);
+    } else {
+      grunt.task.run([ 'env:prod', 'clean', 'eslint', 'concat', 'copy', 'uglify', 'cssmin', 'test' ]);
+    }
+  });
 
+  // upload to droplet
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       grunt.task.run([ 'shell:uploadDroplet' ]);
-    } else {
-      grunt.task.run([ 'server-dev' ]);
     }
   });
 
+  // Development: dev build and run dev server
+  // Production: prod build and upload to droplet
   grunt.registerTask('deploy', function (n) {
     if (grunt.option('prod')) {
-      grunt.task.run([ 'env:prod', 'clean', 'eslint', 'concat', 'copy', 'uglify', 'cssmin', 'test', 'upload' ]);
+      grunt.task.run([ 'env:prod', 'build', 'upload' ]);
     } else {
-      grunt.task.run([ 'build', 'server-dev' ]);
+      grunt.task.run([ 'env:dev', 'build', 'server-dev' ]);
     }
   });
 
-  grunt.registerTask('all', [
-    'build', 'deploy'
-  ]);
 };
