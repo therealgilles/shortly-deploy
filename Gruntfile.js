@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         NODE_ENV: 'prod',
         SERVER_PORT: 4568,
         DB_PORT: 27017,
-        DB_HOST: '127.0.0.1'
+        DB_HOST: 'mongo'
       }
     },
 

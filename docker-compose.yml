@@ -1,19 +1,28 @@
 version: '2'
+
 services:
-  db:
-    image: mongo
-    ports:
-      - "27017:27017"
-    command: "--smallfiles --logpath=/dev/null"
-  shortly-app:
-    build: shortly-app
-    image: shortly-app
-    command: /usr/src/shortly-app/shortly-deploy/node_modules/grunt/bin/grunt server-prod
+
+  web:
+    image: node:latest
+    build: .
+    working_dir: /usr/src/shortly-app/shortly-deploy
     volumes:
-      - /usr/src/shortly-app/shortly-deploy
+      - ./:/usr/src/shortly-app/shortly-deploy
     ports:
-      - "4568:4568"
-    links:
+      - "80:4568"
+    depends_on:
       - db
     environment:
       PORT: 4568
+      DB_HOST: 'mongo'
+    networks:
+      - all
+
+  db:
+    image: mongo
+    command: mongod --smallfiles
+    networks:
+      - all
+
+networks:
+  all:
